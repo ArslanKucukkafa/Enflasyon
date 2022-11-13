@@ -5,8 +5,6 @@ from fastapi import Request, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt,JWTError
 from sqlalchemy.orm import Session
-from model import Product,Users
-
 from config import SECRET_KEY, ALGORITHM
 
 T = TypeVar('T')

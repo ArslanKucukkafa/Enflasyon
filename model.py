@@ -1,5 +1,5 @@
 import email
-from sqlalchemy import Column, Integer, String, Boolean, DateTime
+from sqlalchemy import Column, Integer, String, Boolean, DateTime,Float
 from config import Base
 import datetime
 
@@ -15,4 +15,5 @@ class Users(Base):
 
     create_date = Column(DateTime, default=datetime.datetime.now())
     update_date = Column(DateTime)
+
 
