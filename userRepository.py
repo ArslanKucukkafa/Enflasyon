@@ -5,6 +5,7 @@ from fastapi import Request, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt,JWTError
 from sqlalchemy.orm import Session
+from model import Product,Users
 
 from config import SECRET_KEY, ALGORITHM
 
@@ -23,6 +24,7 @@ class BaseRepo():
 
     @staticmethod
     def insert(db: Session, model: Generic[T]):
+
         db.add(model)
         db.commit()
         db.refresh(model)
