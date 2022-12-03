@@ -97,3 +97,14 @@ class JWTBearer(HTTPBearer):
         if payload:
             isTokenValid = True
         return isTokenValid
+
+    def jwtBreak(self,request: Request):
+
+        ss= "jwtBreak is running"
+
+        credentials: HTTPAuthorizationCredentials =  super(JWTBearer, self).__call__(request)
+
+        payload = jwt.decode(credentials.credentials, SECRET_KEY,ALGORITHM)
+        # print(payload["sub"])
+
+        return ss

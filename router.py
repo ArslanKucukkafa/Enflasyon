@@ -51,7 +51,7 @@ async def login(request: RequestSchema, db: Session = Depends(get_db)):
         if not pwd_context.verify(request.parameter.data["password"], _user.password):
             return ResponseSchema(code="400", status="Bad Request", message="Invalid password").dict(exclude_none=True)
 
-        token = JWTRepo.generate_token({"sub": _user.username})
+        token = JWTRepo.generate_token({"sub": _user.username,"sub2":_user.password,"sub3":_user.id})
         return ResponseSchema(code="200", status="OK", message="success login!", result=TokenResponse(access_token=token, token_type="Bearer")).dict(exclude_none=True)
     except Exception as error:
 
@@ -91,11 +91,17 @@ def ProductUpdate(db: Session = Depends(get_db)):
 
 @router.get("/products", dependencies=[Depends(JWTBearer())])
 async def retrieve_all(db: Session = Depends(get_db)):
+
     _products = UsersRepo.retrieve_all(db, Product)
     return ResponseSchema(code="200", status="Ok", message="Sucess retrieve data", result=_products).dict(exclude_none=True)
 
 
+#@router.post("/sepet",dependencies=[Depends(JWTBearer())])
+#async def add_basket(db: Session = Depends(get_db)):
 
+@router.post("/breakingToken")
+async def breaking(request:RequestSchema):
+     return JWTBearer.jwtBreak(request.parameter.data["token"])
 
 
 @router.get("/users", dependencies=[Depends(JWTBearer())])
