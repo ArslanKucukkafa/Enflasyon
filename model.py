@@ -1,5 +1,4 @@
-import email
-from sqlalchemy import Column, Integer, String, Boolean, DateTime,Float
+from sqlalchemy import Column, Integer, String, DateTime
 from config import Base
 import datetime
 

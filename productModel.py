@@ -1,4 +1,6 @@
-from sqlalchemy import Column, Integer, String, Float
+import datetime
+
+from sqlalchemy import Column, Integer, String, Float, DateTime
 
 from config import Base
 
@@ -9,5 +11,7 @@ class Product(Base):
     id = Column(Integer, primary_key=True)
     productName = Column(String)
     productPrice = Column(Float)
+    create_date = Column(DateTime, default=datetime.datetime.now())
+
 
 
