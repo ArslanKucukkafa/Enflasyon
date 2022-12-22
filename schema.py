@@ -9,6 +9,10 @@ class Parameter(BaseModel):
     data: Dict[str, str] = None
 
 
+class para(BaseModel):
+    data: dict[float, float, float, str, float, float] = None
+
+
 class RequestSchema(BaseModel):
     parameter: Parameter = Field(...)
 
@@ -23,3 +27,8 @@ class ResponseSchema(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str
+
+
+class CartSchema(BaseModel):
+    token :str
+    parameter: para = Field(...)

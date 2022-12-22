@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from schema import RequestSchema, ResponseSchema, TokenResponse
+from schema import RequestSchema, ResponseSchema, TokenResponse,CartSchema
 from sqlalchemy.orm import Session
 from config import get_db
 from passlib.context import CryptContext
@@ -9,6 +9,7 @@ from productModel import Product
 import requests
 from bs4 import BeautifulSoup
 from productRepository import BaseRepo
+from cartRepository import CartRepo
 import logging
 
 router = APIRouter()
@@ -108,3 +109,9 @@ async def breaking(request:RequestSchema):
 async def retrieve_all(db: Session = Depends(get_db)):
     _user = UsersRepo.retrieve_all(db, Users)
     return ResponseSchema(code="200", status="Ok", message="Sucess retrieve data", result=_user).dict(exclude_none=True)
+
+
+@router.post("/saveShopingCart",dependencies=[Depends(JWTBearer)])
+async def saveShopingCart(request:CartSchema,db:Session = Depends(get_db)):
+    a=CartRepo.insert()
+    print(request.parameter.data)
