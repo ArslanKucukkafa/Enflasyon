@@ -1,6 +1,8 @@
+import time
 from datetime import datetime, timedelta
 from typing import TypeVar, Generic, Optional
 
+from anyio import ExceptionGroup
 from fastapi import Request, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt,JWTError
@@ -52,18 +54,20 @@ class JWTRepo():
         if expires_delta:
             expire = datetime.utcnow() + expires_delta
         else:
-            expire = datetime.utcnow() + timedelta(minutes=15)
+            expire = datetime.utcnow() + timedelta(minutes=30)
         to_encode.update({"exp": expire})
         encode_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
         return encode_jwt
 
     def decode_token(token: str):
+        print("decode token")
         try:
-            decode_token = jwt.decode(token, SECRET_KEY, algorithm=[ALGORITHM])
-            return decode_token if decode_token["expires"] >= datetime.time() else None
-        except:
-            return {}
+            decode_token = jwt.decode(token, SECRET_KEY, ALGORITHM)
+            print(decode_token["exp"]>int(time.time()))
+            return decode_token if decode_token["exp"] >= int(time.time()) else None
+        except Exception as error:
+            raise ExceptionGroup('there were problems', error)
 
 
 class JWTBearer(HTTPBearer):
@@ -73,12 +77,13 @@ class JWTBearer(HTTPBearer):
 
     async def __call__(self, request: Request):
         credentials: HTTPAuthorizationCredentials = await super(JWTBearer, self).__call__(request)
-
+        print("print 1",credentials.credentials," ",credentials.scheme)
         if credentials:
             if not credentials.scheme == "Bearer":
                 raise HTTPException(
                     status_code=403, detail="Invalid authentication sheme.")
-            if self.verfity_jwt(credentials.credentials):
+            if  self.verfity_jwt(credentials.credentials):
+                print(self.verfity_jwt("---------1-1-1-1",credentials.credentials))
                 raise HTTPException(
                     status_code=403, detail="Invalid token or expiredd token.")
             return credentials.credentials
@@ -90,21 +95,21 @@ class JWTBearer(HTTPBearer):
         isTokenValid: bool = False
 
         try:
-            payload = jwt.decode(jwttoken, SECRET_KEY, algorithm=[ALGORITHM])
-        except:
-            payload = None
-
-        if payload:
+            payload = JWTRepo.decode_token(jwttoken)
+            print("payload ",payload,"---")
+        except Exception:
+            print("excepting is running")
             isTokenValid = True
+
         return isTokenValid
 
     def jwtBreak(self,request: Request):
 
-        ss= "jwtBreak is running"
+        ss = "jwtBreak is running"
 
         credentials: HTTPAuthorizationCredentials =  super(JWTBearer, self).__call__(request)
 
         payload = jwt.decode(credentials.credentials, SECRET_KEY,ALGORITHM)
-        # print(payload["sub"])
+        print(payload["sub"],payload["sub1"])
 
         return ss
