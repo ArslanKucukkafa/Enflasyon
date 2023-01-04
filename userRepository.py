@@ -61,10 +61,8 @@ class JWTRepo():
         return encode_jwt
 
     def decode_token(token: str):
-        print("decode token")
         try:
             decode_token = jwt.decode(token, SECRET_KEY, ALGORITHM)
-            print(decode_token["exp"]>int(time.time()))
             return decode_token if decode_token["exp"] >= int(time.time()) else None
         except Exception as error:
             raise ExceptionGroup('there were problems', error)
@@ -77,13 +75,11 @@ class JWTBearer(HTTPBearer):
 
     async def __call__(self, request: Request):
         credentials: HTTPAuthorizationCredentials = await super(JWTBearer, self).__call__(request)
-        print("print 1",credentials.credentials," ",credentials.scheme)
         if credentials:
             if not credentials.scheme == "Bearer":
                 raise HTTPException(
                     status_code=403, detail="Invalid authentication sheme.")
             if  self.verfity_jwt(credentials.credentials):
-                print(self.verfity_jwt("---------1-1-1-1",credentials.credentials))
                 raise HTTPException(
                     status_code=403, detail="Invalid token or expiredd token.")
             return credentials.credentials
@@ -96,9 +92,7 @@ class JWTBearer(HTTPBearer):
 
         try:
             payload = JWTRepo.decode_token(jwttoken)
-            print("payload ",payload,"---")
         except Exception:
-            print("excepting is running")
             isTokenValid = True
 
         return isTokenValid

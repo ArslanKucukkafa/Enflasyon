@@ -50,7 +50,6 @@ async def login(request: RequestSchema, db: Session = Depends(get_db)):
        # find user by username
         _user = UsersRepo.find_by_username(
             db, Users, request.parameter.data["username"])
-        print("Hello Login def")
         print(_user)
 
         if not pwd_context.verify(request.parameter.data["password"], _user.password):
@@ -94,7 +93,7 @@ def ProductUpdate(db: Session = Depends(get_db)):
 
 
 
-@router.get("/api/products/", dependencies=[Depends(JWTBearer())])
+@router.get("/api/products/",dependencies=[Depends(JWTBearer())])
 async def retrieve_all(db: Session = Depends(get_db)):
 
     _products = UsersRepo.retrieve_all(db, Product)
@@ -118,10 +117,7 @@ async def retrieve_all(db: Session = Depends(get_db)):
     return ResponseSchema(code="200", status="Ok", message="Sucess retrieve data", result=_user).dict(exclude_none=True)
 
 
-@router.post("api/saveShopingCart/",dependencies=[Depends(JWTBearer)])
-async def saveShopingCart(request:CartSchema,db:Session = Depends(get_db)):
-    breakingRec(request)
-    _cart = productCart(uid=request.parameter.data["id"],
-                        cid=request.parameter.data)
-    print(request.parameter.data)
+@router.post("/api/saveShopingCart/",dependencies=[Depends(JWTBearer())])
+async def saveShopingCart(request:CartSchema):
+    print(request.parameter.data["name"])
     return ResponseSchema(code="200", status="Ok", message="Sucess retrieve data").dict(exclude_none=True)

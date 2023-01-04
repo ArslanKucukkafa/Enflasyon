@@ -31,4 +31,5 @@ class TokenResponse(BaseModel):
 
 class CartSchema(BaseModel):
     token :str
+    earnings:str
     parameter: para = Field(...)
